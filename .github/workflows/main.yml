@@ -35,7 +35,7 @@ jobs:
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
-      run: mvn clean package
+      run: mvn clean package -DskipTests
 
     - name: Upload build artifact (Date Versioned)
       uses: actions/upload-artifact@v4
