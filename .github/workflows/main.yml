@@ -30,7 +30,7 @@ jobs:
     - name: Generate Date Based Version (IST)
       id: version
       run: |
-        VERSION=$(TZ=Asia/Kolkata date +"%d.%m.%Y")
+        VERSION=$(TZ=Asia/Kolkata date +"%d.%m.%Y-%I.%M%p")
         echo "Build Version: $VERSION"
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
