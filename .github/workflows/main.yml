@@ -42,3 +42,29 @@ jobs:
       with:
         name: student-crud-${{ steps.version.outputs.version }}
         path: target/*.jar
+
+        # ---------------- CD PART ----------------
+
+    - name: Copy JAR to CI Server (SCP)
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.CI_HOST }}
+        username: ${{ secrets.CI_USER }}
+        key: ${{ secrets.CI_SSH_KEY }}
+        source: "target/*.jar"
+        target: "/opt/apps/student-crud/"
+
+    - name: Deploy on CI Server (SSH)
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.CI_HOST }}
+        username: ${{ secrets.CI_USER }}
+        key: ${{ secrets.CI_SSH_KEY }}
+        script: |
+          echo "Stopping old application (if running)"
+          pkill -f CRUDOperation || true
+
+          echo "Starting new application"
+          nohup java -jar /opt/apps/student-crud/*.jar > /opt/apps/student-crud/app.log 2>&1 &
+
+          echo "Deployment completed successfully"
